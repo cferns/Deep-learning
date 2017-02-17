@@ -1,0 +1,1 @@
+This project is about use of a neural network for recognizing handwritten digits in the MNIST dataset.
