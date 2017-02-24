@@ -14,6 +14,9 @@ n_classes = 10  # MNIST total classes (0-9 digits)
 # Import MNIST data
 mnist = input_data.read_data_sets('.', one_hot=True)
 
+
+tempDelete = mnist.train
+
 # Features and Labels
 features = tf.placeholder(tf.float32, [None, n_input])
 labels = tf.placeholder(tf.float32, [None, n_classes])
@@ -35,11 +38,12 @@ correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 #Training the model
-save_file = './saved models/train_model.ckpt'
+save_file = './train_model.ckpt'
 batch_size = 128
-n_epochs = 100
+n_epochs = 1000
 
 saver = tf.train.Saver()
+
 
 # Launch the graph
 with tf.Session() as sess:
@@ -55,16 +59,13 @@ with tf.Session() as sess:
             sess.run(optimizer,feed_dict={features: batch_features, labels: batch_labels})
 
         # Print status for every 10 epochs
-        if epoch % 10 == 0:
+        if epoch % 100 == 0:
             valid_accuracy = sess.run(accuracy,feed_dict={features: mnist.validation.images,labels: mnist.validation.labels})
             print('Epoch {:<3} - Validation Accuracy: {}'.format(epoch,valid_accuracy))
 
     # Save the model
     saver.save(sess, save_file)
     print('Trained Model Saved.')
-
-
-
 
 #Load the model
 with tf.Session() as sess:
@@ -73,5 +74,6 @@ with tf.Session() as sess:
     test_accuracy = sess.run(
         accuracy,
         feed_dict={features: mnist.test.images, labels: mnist.test.labels})
-
+	
+print('Saved model loaded')	
 print('Test Accuracy: {}'.format(test_accuracy))
